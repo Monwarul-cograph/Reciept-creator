@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block start %}
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .text {
+        color: green;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .ok {
+        color: white;
+        text-decoration: none;
+    }
+
+    .ok:hover {
+        color: white;
+        text-decoration: none;
+    }
+
+    .form-container {
+        margin-top: 20px;
+    }
+
+    .form-group label {
+        font-size: 16px;
+    }
+
+    .form-group input {
+        font-size: 14px;
+    }
+
+    .table th,
+    .table td {
+        font-size: 14px;
+    }
+
+    .table td a {
+        margin-right: 10px;
+    }
+
+    .btn-custom {
+        font-size: 14px;
+    }
+
+    .total-sum {
+        font-weight: bold;
+        color: #333;
+    }
+</style>
+
+<div class="container mt-5 col-6">
+    <form class="col-6 mx-auto card p-3 shadow-lg form-container" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="text text-center">khawaja Traders</h3>
+        <br>
+        <h4 style="font-family: 'Times New Roman', Times, serif;">Create Receipt</h4>
+        <hr>
+        <div class="form-group">
+            <label for="name">Item Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input name="price" type="number" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input name="quantity" class="form-control" type="number" required>
+        </div>
+        <button type="submit" class="btn btn-success btn-custom">Add Data</button>
+    </form>
+    <hr>
+    <div class="mt-5">
+        <form action="">
+            <button class="btn btn-primary btn-custom">
+                <a class="ok" href="{% url 'pdf' %}">Generate Bill</a>
+            </button>
+            <button class="btn btn-danger btn-custom">
+                <a class="ok" href="{% url 'logout' %}">Logout</a>
+            </button>
+        </form>
+
+        <table class="table mt-6">
+            <thead>
+                <tr>
+                    <th scope="col">S.No.</th>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipt in receipts %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ receipt.name }}</td>
+                    <td>&#x20B9;{{ receipt.price }}</td>
+                    <td>{{ receipt.quantity }}</td>
+                    <td>&#x20B9;{{ receipt.total }}</td>
+                    <td>
+                        <a href="/delete_receipt/{{ receipt.id }}" class="btn btn-danger m-2 btn-custom">Delete</a>
+                        <a href="/update_receipt/{{ receipt.id }}" class="btn btn-success btn-custom">Update</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <th colspan="4" class="text-right total-sum">Total Sum:</th>
+                    <td class="total-sum">&#x20B9;{{ total_sum }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -17,7 +17,7 @@ def receipts(request):
         total = float(price) * int(quantity)
 
         Receipt.objects.create(
-            name = name,
+            name=name,
             price=price,
             quantity=quantity,
             total=total
@@ -29,10 +29,11 @@ def receipts(request):
         queryset = queryset.filter(
             name__icontains=request.GET.get('search'))
         
-      # Calculate the total sum
+    # Calculate the total sum
     total_sum = sum(receipt.total for receipt in queryset)
     context = {'receipts': queryset, 'total_sum': total_sum}
     return render(request, 'receipts.html', context)
+
 @login_required(login_url='/login/')
 def update_receipt(request, id):
     queryset = Receipt.objects.get(id=id)
@@ -61,47 +62,47 @@ def delete_receipt(request, id):
     return redirect('/')
 
 def login_page(request):
-    if request.method == &quot;POST&quot;:
+    if request.method == "POST":
         try:
             username = request.POST.get('username')
             password = request.POST.get('password')
             user_obj = User.objects.filter(username=username)
             if not user_obj.exists():
-                messages.error(request, &quot;Username not found&quot;)
+                messages.error(request, "Username not found")
                 return redirect('/login/')
             user_obj = authenticate(username=username, password=password)
             if user_obj:
                 login(request, user_obj)
                 return redirect('receipts')
-            messages.error(request, &quot;Wrong Password&quot;)
+            messages.error(request, "Wrong Password")
             return redirect('/login/')
         except Exception as e:
-            messages.error(request, &quot;Something went wrong&quot;)
+            messages.error(request, "Something went wrong")
             return redirect('/register/')
-    return render(request, &quot;login.html&quot;)
+    return render(request, "login.html")
 
 def register_page(request):
-    if request.method == &quot;POST&quot;:
+    if request.method == "POST":
         try:
             username = request.POST.get('username')
             password = request.POST.get('password')
             user_obj = User.objects.filter(username=username)
             if user_obj.exists():
-                messages.error(request, &quot;Username is taken&quot;)
+                messages.error(request, "Username is taken")
                 return redirect('/register/')
             user_obj = User.objects.create(username=username)
             user_obj.set_password(password)
             user_obj.save()
-            messages.success(request, &quot;Account created&quot;)
+            messages.success(request, "Account created")
             return redirect('/login')
         except Exception as e:
-            messages.error(request, &quot;Something went wrong&quot;)
+            messages.error(request, "Something went wrong")
             return redirect('/register')
-    return render(request, &quot;register.html&quot;)
+    return render(request, "register.html")
 
 def custom_logout(request):
     logout(request)
-    return redirect('login') 
+    return redirect('login')
 
 @login_required(login_url='/login/')
 def pdf(request):
@@ -113,7 +114,7 @@ def pdf(request):
         total = float(price) * int(quantity)
 
         Receipt.objects.create(
-            name = name,
+            name=name,
             price=price,
             quantity=quantity,
             total=total
@@ -126,7 +127,6 @@ def pdf(request):
         queryset = queryset.filter(
             name__icontains=request.GET.get('search'))
         
-     
     total_sum = sum(receipt.total for receipt in queryset)
 
     context = {'receipts': queryset, 'total_sum': total_sum}
