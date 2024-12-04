@@ -6,6 +6,9 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
+from django.shortcuts import get_object_or_404
+from django.http import Http404
+
 
 @login_required(login_url='/login/')
 def receipts(request):
@@ -34,9 +37,33 @@ def receipts(request):
     context = {'receipts': queryset, 'total_sum': total_sum}
     return render(request, 'receipts.html', context)
 
+
+
+# @login_required(login_url='/login/')
+# def update_receipt(request, id):
+#     queryset = Receipt.objects.get(id=id)
+
+#     if request.method == 'POST':
+#         data = request.POST   
+#         name = data.get('name')
+#         price = data.get('price')
+#         quantity = data.get('quantity')
+#         total = float(price) * int(quantity)
+        
+#         queryset.name = name
+#         queryset.price = price
+#         queryset.quantity = quantity
+#         queryset.total = total
+#         queryset.save()
+#         return redirect('/')
+
+#     context = {'receipt': queryset}
+#     return render(request, 'update_receipt.html', context)
+
+
 @login_required(login_url='/login/')
 def update_receipt(request, id):
-    queryset = Receipt.objects.get(id=id)
+    queryset = get_object_or_404(Receipt, id=id)
 
     if request.method == 'POST':
         data = request.POST   
@@ -54,6 +81,8 @@ def update_receipt(request, id):
 
     context = {'receipt': queryset}
     return render(request, 'update_receipt.html', context)
+
+    
 
 @login_required(login_url='/login/')
 def delete_receipt(request, id):
